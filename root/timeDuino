@@ -1,0 +1,55 @@
+#!/usr/bin/lua
+
+require "ubidots" --ubidots functions
+require "ediy_functions" --some basic functions
+require "configurations" --load settings
+
+
+function post2Ubidots(value)
+	if not internet_up() then return false end
+	--obtain a token based on a given api_key
+	get_token(conf.ubidots_api_key)
+	--post data to Ubidots
+	post_value(conf.ubidots_deviceID, value)
+end
+
+
+function process_cmd(cmd, value)
+	if cmd=="@SND" then
+		post2Ubidots(value)		
+	end
+	if cmd=="@LST" then
+		--value=tostring(os.time())..":"..value
+		--the content of value woule be: 794,15,3600,ON
+		addLog(tostring(value))		
+	end
+end
+
+
+function upload_to_ubidots_once()
+	if (internet_up() and need_upload) then
+		writeSerial("@U".."\r")
+		print("OK")
+		need_upload="N" --indicated uploaded
+	end
+end
+
+
+local cmd="stty -F "..conf.com_port.." "..conf.baud_rate
+read_data_from_program(cmd) --set baud_rate
+
+--print("Ready...")
+
+--loop forever, Used for communication between the Arduino board and router
+while true do
+	upload_to_ubidots_once()
+ 	local serialData=  (readSerial()) 
+	if serialData ~= "" then
+		--print(serialData)
+		local cmd= string.sub(serialData,1,4) --first 4 characters
+  		local value= string.sub(serialData,6) --from character 6 until the end
+		process_cmd(cmd,value)
+	end
+end
+
+

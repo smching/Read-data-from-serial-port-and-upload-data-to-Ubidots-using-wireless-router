@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd"> 
+
+<html>
+<head>
+<script src="myJavaScript.js"></script>
+</head>
+
+<body onLoad="autoRun()">
+
+<!-- 
+<input type="submit" value="Refresh" onclick="xmlhttpPost("@D")" />
+-->
+
+<script>
+function myFunction() {
+    setInterval(function(){ myTimer(); }, 5000);
+}
+</script>
+
+<button onclick="myFunction()">Auto Refresh</button>
+
+<table id="table1" border="1" class="inlineTable">
+  <tr>
+    <td>Name</td>
+    <td>Value</td>
+  </tr>
+  <tr>
+  <tr>
+    <td>Ubidots API key</td>
+    <td>a76b6cf457beff1961063154950a720f8de40e92</td>
+  </tr>
+  <tr>
+    <td>Ubidots Device ID</td> 
+    <td>55607469762542144ef3bfd6</td>
+  </tr>
+   <tr>
+    <td>Router port</td> 
+    <td>/dev/ttyATH0</td>
+  </tr> 
+   <tr>
+    <td>Saved time</td> 
+    <td></td>
+  </tr>  
+   <tr>
+    <td>Elapsed time</td> 
+    <td></td>
+  </tr>   
+   <tr>
+    <td>Interval</td> 
+    <td></td>
+  </tr> 
+   <tr>
+    <td>Sensor</td> 
+    <td></td>
+  </tr>   
+</table>
+
+<br>
+<input type="text" id="time" size="10" maxlength="16" />
+<input type="submit" value="Update SAVED TIME" style="width:200px" onclick="time_update()" />
+<br><br>
+
+<input type="text" id="interval" size="10" maxlength="4" />
+<input type="submit" value="Update UPLOAD INTERVAL" style="width:200px" onclick="interval_update()" />
+<br><br>
+
+<input type="submit" value="Upload TOTAL ELAPSE TIME to Ubidots.com" style="width:306px" onclick="upload()" />
+<br><br>
+
+<iframe id=ubidots width="430" height="130" frameborder="1" src="1https://app.ubidots.com/ubi/getchart/"></iframe>
+
+
+</body>
+</html>

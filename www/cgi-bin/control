@@ -1,0 +1,72 @@
+#!/bin/sh
+
+#http://192.168.8.1/cgi-bin/control?@d
+# return sample: 2272,958,1800,ON
+# eepromValue,currentTime,interval,sensorState
+
+comPort="/dev/ttyATH0"
+url_str=$QUERY_STRING 
+command=${url_str:0:2} #first two characters
+command=$(echo $command | tr 'a-z' 'A-Z') #convert to upper case
+parameter=${url_str:2:100} #start from 3rd until end
+parameter_length=${#parameter}
+
+
+
+Send_command() {
+	echo $1 > /dev/ttyATH0 #send command to the device.
+}
+
+disp_status() {
+	command="@D/r"
+	Send_command $command 
+	sleep 0.1 
+	value=`cat /tmp/ubidots.log` #read file and assign to variable
+	echo "$value"
+}
+
+
+case "$command" in
+   "@D") 
+	disp_status
+	#Send_command $command 
+	#sleep 0.1 
+	#value=`cat /tmp/ubidots.log` #read file and assign to variable
+	#echo "$value"
+   	;;
+   "@K") 
+	#http://192.168.8.1/cgi-bin/timeDuino?@Ka76b6cf457beff1961063154950a720f8de40e92
+	if [ "$parameter_length" -eq 40 ]
+	then
+	   uci set ubidots.key.api_key=$parameter
+	   uci commit ubidots
+	   echo "API_key changed to "$parameter
+	else
+	  echo "Invalid API_key"
+	fi
+   	;;
+   "@V") 
+	#http://192.168.8.1/cgi-bin/timeDuino?@V55607469762542144ef3bfd6
+	if [ "$parameter_length" -eq 24 ]
+	then
+	   uci set ubidots.key.deviceID=$parameter
+	   uci commit ubidots
+	   echo "DeviceID change to "$parameter
+	else
+	   echo "Invalid deviceID."
+	fi
+   	;;
+   "@T")
+	Send_command $url_str
+
+   	;;
+   "@U")
+	Send_command $url_str
+	disp_status
+	#echo "Please reload webpage"
+   	;;
+   "@I")
+	Send_command $url_str
+	disp_status
+   	;;
+esac
