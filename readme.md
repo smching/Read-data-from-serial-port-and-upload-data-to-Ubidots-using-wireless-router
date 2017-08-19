@@ -2,9 +2,13 @@ This is part of the source code for my timeDuino project (code for router only, 
 
 
 Instruction: Upload all files and folders to the router.
+
 etc folder: a file used to run the program on router startup.
+
 www folder: display information on a webpage, additionally it is used to update data to Arduino.
+
 root folder: application program running on router.
+
 usr folder: some basic lua functions such as read/write serial port, save/load configuration, etc.
 
 
